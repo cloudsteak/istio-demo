@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: demo-gw
+  namespace: istio-test
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - istio.demo.local
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: httpbin-vs
+  namespace: istio-test
+spec:
+  hosts:
+  - istio.demo.local
+  gateways:
+  - demo-gw
+  http:
+  - route:
+    - destination:
+        host: httpbin.istio-test.svc.cluster.local
+        port:
+          number: 8000
